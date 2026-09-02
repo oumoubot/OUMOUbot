@@ -1,34 +1,29 @@
-import streamlit as st.set_page_config(page_title="OUMOU BOT V3",page_icon="🤖",layout="centered")    # BEAUTÉ DU SITE
-    st.markdown("""
-    <style>
-    .stApp { 
-        background: linear-gradient(135deg, #006633 0%, #FCD116 50%, #CE1126 100%);
-    }
-    .logo { text-align: center; padding-top: 30px; }
-    .title { text-align: center; color: white; font-size: 40px; font-weight: bold; text-shadow: 2px 2px 4px black; }
-    .subtitle { text-align: center; color: white; font-size: 18px; margin-bottom: 30px; }
-    .stButton>button { 
-        width: 100%; height: 60px; font-size: 20px; 
-        background-color: #25D366; color: white; 
-        border-radius: 15px; border: none; font-weight: bold;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+import streamlit as st
 
-    # LOGO
-    st.markdown('<div class="logo">', unsafe_allow_html=True)
-    st.image("IMG-20260901-WA9281.jpg", width=220)
-    st.markdown('</div>', unsafe_allow_html=True)
+# CONFIG DE LA PAGE
+st.set_page_config(
+    page_title="OUMOU BOT V3",
+    page_icon="🇲🇱",
+    layout="centered"
+)
 
-    # TITRE
-    st.markdown('<p class="title">OUMOU BOT V3</p>', unsafe_allow_html=True)
-    st.markdown('<p class="subtitle">Assistant pour Touts</p>', unsafe_allow_html=True)
+# COULEURS MALI
+st.markdown("""
+<style>
+    .main {background-color: #F0F2F6;}
+    h1 {color: #14B53A;} /* VERT */
+    h2 {color: #FCD116;} /* JAUNE */
+    h3 {color: #CE1126;} /* ROUGE */
+</style>
+""", unsafe_allow_html=True)
 
-    st.write("")
-    st.write("")
+# TITRE
+st.title("🇲🇱 OUMOU BOT V3")
+st.header("L'IA du Mali")
+st.write("Salut Adama ! Ton bot est en ligne et il marche.")
 
-    # BOUTON WHATSAPP
-    st.link_button("💬 PARLER À OUMOU SUR WHATSAPP", "https://wa.me/22368497540")
-
-    st.markdown("---")
-    st.markdown("<center style='color:white'>Made with ❤️ au Mali</center>", unsafe_allow_html=True) 
+# CHAT
+user_input = st.text_input("Pose ta question ici:")
+if user_input:
+    st.success(f"Tu as dit: {user_input}")
+    st.info("Bientôt je vais répondre avec l'IA Gemini")
