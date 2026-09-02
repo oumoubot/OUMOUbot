@@ -1,29 +1,31 @@
 import streamlit as st
+import google.generativeai as genai
 
-# CONFIG DE LA PAGE
-st.set_page_config(
-    page_title="OUMOU BOT V3",
-    page_icon="🇲🇱",
-    layout="centered"
-)
+st.set_page_config(page_title="OUMOU BOT V3", page_icon="🇲🇱", layout="centered")
+st.markdown("""<style>h1 {color: #14B53A;} h2 {color: #FCD116;} h3 {color: #CE1126;}</style>""", unsafe_allow_html=True)
 
-# COULEURS MALI
-st.markdown("""
-<style>
-    .main {background-color: #F0F2F6;}
-    h1 {color: #14B53A;} /* VERT */
-    h2 {color: #FCD116;} /* JAUNE */
-    h3 {color: #CE1126;} /* ROUGE */
-</style>
-""", unsafe_allow_html=True)
-
-# TITRE
 st.title("🇲🇱 OUMOU BOT V3")
-st.header("L'IA du Mali")
-st.write("Salut Adama ! Ton bot est en ligne et il marche.")
+st.write("L'IA du Mali - Pose-moi n'importe quelle question")
 
-# CHAT
-user_input = st.text_input("Pose ta question ici:")
-if user_input:
-    st.success(f"Tu as dit: {user_input}")
-    st.info("Bientôt je vais répondre avec l'IA Gemini")
+# CONNEXION À GEMINI
+api_key = st.secrets["GOOGLE_API_KEY"]
+genai.configure(api_key=api_key)
+model = genai.GenerativeModel('gemini-1.5-flash')
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+if prompt := st.chat_input("Écris ta question ici..."):
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
+    
+    with st.chat_message("assistant"):
+        with st.spinner("OUMOU réfléchit..."):
+            response = model.generate_content(f"Tu es OUMOU BOT V3, l'IA du Mali. Sois gentil, utile et réponds en français. Question: {prompt}")
+            st.markdown(response.text)
+    st.session_state.messages.append({"role": "assistant", "content": response.text})
