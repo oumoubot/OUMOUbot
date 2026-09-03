@@ -8,7 +8,7 @@ st.title("🇲🇱 OUMOU BOT V3")
 st.write("L'IA du Mali - Pose-moi n'importe quelle question")
 
 # CONNEXION À GEMINI
-api_key = st.secrets["GOOGLE_API_KEY"]
+api_key = st.secrets["CLÉ_API_GOOGLE"]
 genai.configure(api_key=api_key)
 model = genai.GenerativeModel('gemini-1.5-flash')
 if "messages" not in st.session_state:
