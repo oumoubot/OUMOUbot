@@ -15,10 +15,11 @@ genai.configure(api_key=api_key)
 model = genai.GenerativeModel('gemini-1.5-flash-latest')
 
 prompt = st.text_input("Écris ici:")
-if st.button("Envoyer"):
+if st  if st.button("Envoyer"):
     if prompt:
         with st.spinner("OUMOU réfléchit..."):
-                    response = model.generate_content(
-                        f"Tu es OUMOU, assistante malienne. Réponds en français et bambara. "
-                        f"Sois courte et gentille. Question: {prompt}"
-                    )  st.success(f"**OUMOU:** " + response.text)     
+            response = model.generate_content(
+                f"Tu es OUMOU, assistante malienne. Réponds en français et bambara. "
+                f"Sois courte et gentille. Question: {prompt}"
+            )
+            st.success(f"**OUMOU:** " + response.text)   
