@@ -1,60 +1,28 @@
 import streamlit as st
 import google.generativeai as genai
-import speech_recognition as sr
-from gtts import gTTS
-from PIL import Image
-import io
 
-st.set_page_config(page_title="OUMOU - IA du Mali", page_icon="🇲🇱")
+st.set_page_config(page_title="OUMOU", page_icon="🤖")
 
-# 1. CONNEXION À GEMINI
-api_key = st.secrets["GOOGLE_API_KEY"]
+st.title("🤖 OUMOU - Assistante Bambara")
+st.write("I ni cé Adama ! Ne b'i togo fô")
+
+# Clé API
+api_key = st.secrets.get("GOOGLE_API_KEY")
+if not api_key:
+    st.error("GOOGLE_API_KEY manquant dans Secrets")
+    st.stop()
+
 genai.configure(api_key=api_key)
-model = genai.GenerativeModel('gemini-1.5-flash')
+model = genai.GenerativeModel('gemini-1.5-flash-latest')
 
-st.title("🇲🇱 OUMOU - IA du Mali")
-st.write("I ni cé! Je parle Bambara, Français. Envoie texte, vocal ou photo")
-
-# 2. ZONE DE CHAT
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-# 3. UPLOAD PHOTO
-photo = st.file_uploader("📸 Envoie une photo à OUMOU", type=["jpg", "png"])
-
-# 4. BOUTON MICRO
-if st.button("🎤 Parler"):
-    r = sr.Recognizer()
-    with sr.Microphone() as source:
-        st.write("Ka dòn... Parle maintenant")
-        audio = r.listen(source)
-    try:
-        texte = r.recognize_google(audio, language="fr-FR") # on met fr car bm est rare
-        st.session_state.messages.append({"role": "user", "content": texte})
-    except:
-        st.error("N'a pas compris")
-
-# 5. ZONE TEXTE
-prompt = st.chat_input("Écris à OUMOU ici...")
-
-# 6. TRAITEMENT
-input_data = prompt
-if photo:
-    input_data = [prompt, Image.open(photo)]
-    st.image(photo)
-
-if prompt or photo:
-    st.session_state.messages.append({"role": "user", "content": str(input_data)})
+# Zone de chat
+if prompt := st.chat_input("Écris ici en français ou bambara..."):
+    st.write(f"**Toi:** {prompt}")
     
-    response = model.generate_content(input_data)
-    reponse_texte = response.text
-    st.session_state.messages.append({"role": "assistant", "content": reponse_texte})
-    
-    # 7. OUMOU PARLE
-    tts = gTTS(text=reponse_texte, lang='fr') # 'fr' marche mieux que 'bm'
-    tts.save("reponse.mp3")
-    st.audio("reponse.mp3")
-
-# 8. AFFICHER L'HISTORIQUE
-for msg in st.session_state.messages:
-    st.chat_message(msg["role"]).write(msg["content"])
+    with st.spinner("OUMOU réfléchit..."):
+        response = model.generate_content(
+            f"Tu es OUMOU, une assistante malienne. Tu parles bambara et français. "
+            f"Si on te parle en bambara, réponds en bambara. "
+            f"Question: {prompt}"
+        )
+        st.write(f"**OUMOU:** {response.text}")
